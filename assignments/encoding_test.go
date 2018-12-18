@@ -7,11 +7,11 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type JsonTestSuite struct {
+type EncodingTestSuite struct {
 	suite.Suite
 }
 
-func (suite *JsonTestSuite) TestNewAssignment() {
+func (suite *EncodingTestSuite) TestNewAssignment() {
 	payload := `
 		{
 			"cache": true,
@@ -42,7 +42,7 @@ func (suite *JsonTestSuite) TestNewAssignment() {
 	}
 }
 
-func (suite *JsonTestSuite) TestExistingAssignment() {
+func (suite *EncodingTestSuite) TestExistingAssignment() {
 	payload := `
 		{
 			"cache": true,
@@ -73,7 +73,7 @@ func (suite *JsonTestSuite) TestExistingAssignment() {
 	}
 }
 
-func (suite *JsonTestSuite) TestInDraftExperiment() {
+func (suite *EncodingTestSuite) TestInDraftExperiment() {
 	payload := `
 		{
 			"cache": false,
@@ -99,5 +99,5 @@ func (suite *JsonTestSuite) TestInDraftExperiment() {
 }
 
 func TestJsonTestSuite(t *testing.T) {
-	suite.Run(t, new(JsonTestSuite))
+	suite.Run(t, new(EncodingTestSuite))
 }
