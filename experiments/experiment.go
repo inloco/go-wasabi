@@ -18,7 +18,7 @@ type Experiment struct {
 	RuleJSON                 string            `json:"ruleJson"`
 	CreationTime             *time.Time        `json:"creationTime"`
 	ModificationTime         *time.Time        `json:"modificationTime"`
-	State                    State             `json:"state"`
+	State                    ExperimentState   `json:"state"`
 	IsPersonalizationEnabled bool              `json:"isPersonalizationEnabled"`
 	ModelName                string            `json:"modelName"`
 	ModelVersion             string            `json:"modelVersion"`
@@ -27,26 +27,17 @@ type Experiment struct {
 	CreatorID                string            `json:"creatorID"`
 	Tags                     []string          `json:"tags"`
 	Buckets                  []*Bucket         `json:"buckets"`
-	ExclusionIDList          []*ExclusionID    `json:"exclusionIdList"`
+	ExclusionIDList          []string          `json:"exclusionIdList"`
 	ExperimentPageList       []*ExperimentPage `json:"experimentPageList"`
 	Priority                 float64           `json:"priority"`
 }
 
-type ExperimentPage struct {
-	Name               string `json:"name"`
-	AllowNewAssignment bool   `json:"allowNewAssignment"`
-}
+const (
+	ExperimentStateDraft      = "DRAFT"
+	ExperimentStateRunning    = "RUNNING"
+	ExperimentStatePaused     = "PAUSED"
+	ExperimentStateTerminated = "TERMINATED"
+	ExperimentStateDeleted    = "DELETED"
+)
 
-type Bucket struct {
-	Label             string  `json:"label"`
-	ExperimentID      string  `json:"experimentID"`
-	AllocationPercent float64 `json:"allocationPercent"`
-	Description       string  `json:"description"`
-	Payload           string  `json:"payload"`
-	State             string  `json:"state"`
-	IsControl         bool    `json:"isControl"`
-}
-
-type ExclusionID struct {
-	RawID string `json:"rawID"`
-}
+type ExperimentState string

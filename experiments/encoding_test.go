@@ -8,11 +8,13 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type JsonTestSuite struct {
+type EncodingTestSuite struct {
 	suite.Suite
 }
 
-func (suite *JsonTestSuite) TestExperiment() {
+// Tests the decoding of experiments with all fields filled.
+// This payload is seen on /experiments index endpoint.
+func (suite *EncodingTestSuite) TestExperiment() {
 
 	payload := `
 		{
@@ -23,8 +25,8 @@ func (suite *JsonTestSuite) TestExperiment() {
 			"endTime": "2018-12-31T03:00:00Z",
 			"samplingPercent": 1.0,
 			"description": "I just need an application to start developing my lil' client.",
-			"hypothesisIsCorrect": "",
-			"results": "",
+			"hypothesisIsCorrect": "yes",
+			"results": "Experiment Results",
 			"rule": "",
 			"ruleJson": "",
 			"creationTime": "2018-12-17T20:24:22Z",
@@ -36,7 +38,141 @@ func (suite *JsonTestSuite) TestExperiment() {
 			"isRapidExperiment": true,
 			"userCap": 80000,
 			"creatorID": "admin",
-			"tags": null,
+			"tags": [
+				"tag_00"
+			],
+			"buckets": [
+				{
+					"label": "ControlGroup",
+					"experimentID": "5f04d5e5-a39b-4c02-ac44-10131c3dea06",
+					"allocationPercent": 0.2,
+					"description": "Controle",
+					"payload": "bucket=control",
+					"state": "OPEN",
+					"isControl": true
+				},
+				{
+					"label": "ExperimentGroup",
+					"experimentID": "5f04d5e5-a39b-4c02-ac44-10131c3dea06",
+					"allocationPercent": 0.8,
+					"description": "Experiment Group",
+					"payload": "group=experiment",
+					"state": "OPEN",
+					"isControl": false
+				}
+			],
+			"exclusionIdList": [
+				"7a2e8071-712e-463d-b26a-fab086b50603"
+			],
+			"experimentPageList": [
+				{
+					"name": "www.somepage.com",
+					"allowNewAssignment": true
+				}
+			],
+			"priority": 1
+		}
+	`
+
+	experiment := &Experiment{}
+
+	err := json.Unmarshal([]byte(payload), experiment)
+	if suite.NoError(err) {
+
+		expectedStartTime, _ := time.Parse(time.RFC3339, "2018-12-17T03:00:00Z")
+		expectedEndTime, _ := time.Parse(time.RFC3339, "2018-12-31T03:00:00Z")
+		expectedCreationTime, _ := time.Parse(time.RFC3339, "2018-12-17T20:24:22Z")
+		expectedModificationTime, _ := time.Parse(time.RFC3339, "2018-12-17T22:11:55Z")
+
+		expected := &Experiment{
+			ID:                       "5f04d5e5-a39b-4c02-ac44-10131c3dea06",
+			Label:                    "Develop",
+			ApplicationName:          "develop",
+			StartTime:                &expectedStartTime,
+			EndTime:                  &expectedEndTime,
+			SamplingPercent:          1.0,
+			Description:              "I just need an application to start developing my lil' client.",
+			HypothesisIsCorrect:      "yes",
+			Results:                  "Experiment Results",
+			Rule:                     "",
+			RuleJSON:                 "",
+			CreationTime:             &expectedCreationTime,
+			ModificationTime:         &expectedModificationTime,
+			State:                    ExperimentStateRunning,
+			IsPersonalizationEnabled: false,
+			ModelName:                "",
+			ModelVersion:             "",
+			IsRapidExperiment:        true,
+			UserCap:                  80000,
+			CreatorID:                "admin",
+			Tags:                     []string{"tag_00"},
+			Buckets: []*Bucket{
+				&Bucket{
+					Label:             "ControlGroup",
+					ExperimentID:      "5f04d5e5-a39b-4c02-ac44-10131c3dea06",
+					AllocationPercent: 0.2,
+					Description:       "Controle",
+					Payload:           "bucket=control",
+					State:             BucketStateOpen,
+					IsControl:         true,
+				},
+				&Bucket{
+					Label:             "ExperimentGroup",
+					ExperimentID:      "5f04d5e5-a39b-4c02-ac44-10131c3dea06",
+					AllocationPercent: 0.8,
+					Description:       "Experiment Group",
+					Payload:           "group=experiment",
+					State:             BucketStateOpen,
+					IsControl:         false,
+				},
+			},
+			ExclusionIDList: []string{"7a2e8071-712e-463d-b26a-fab086b50603"},
+			ExperimentPageList: []*ExperimentPage{
+				&ExperimentPage{
+					Name:               "www.somepage.com",
+					AllowNewAssignment: true,
+				},
+			},
+			Priority: 1.0,
+		}
+
+		suite.EqualValues(
+			expected,
+			experiment,
+		)
+	}
+
+}
+
+// Tests the decoding of experiments with just the first level fields filled.
+// This payload is seen on /experiments/:id get endpoint.
+func (suite *EncodingTestSuite) TestShallowExperiment() {
+
+	payload := `
+		{
+			"id": "5f04d5e5-a39b-4c02-ac44-10131c3dea06",
+			"label": "Develop",
+			"applicationName": "develop",
+			"startTime": "2018-12-17T03:00:00Z",
+			"endTime": "2018-12-31T03:00:00Z",
+			"samplingPercent": 1.0,
+			"description": "I just need an application to start developing my lil' client.",
+			"hypothesisIsCorrect": "yes",
+			"results": "Experiment Results",
+			"rule": "",
+			"ruleJson": "",
+			"creationTime": "2018-12-17T20:24:22Z",
+			"modificationTime": "2018-12-17T22:11:55Z",			
+			"state": "PAUSED",
+			"isPersonalizationEnabled": false,
+			"modelName": "",
+			"modelVersion": "",
+			"isRapidExperiment": true,
+			"userCap": 80000,
+			"creatorID": "admin",
+			"tags": [
+				"tag_00"
+			],
 			"buckets": [],
 			"exclusionIdList": null,
 			"experimentPageList": null,
@@ -62,24 +198,24 @@ func (suite *JsonTestSuite) TestExperiment() {
 			EndTime:                  &expectedEndTime,
 			SamplingPercent:          1.0,
 			Description:              "I just need an application to start developing my lil' client.",
-			HypothesisIsCorrect:      "",
-			Results:                  "",
+			HypothesisIsCorrect:      "yes",
+			Results:                  "Experiment Results",
 			Rule:                     "",
 			RuleJSON:                 "",
 			CreationTime:             &expectedCreationTime,
 			ModificationTime:         &expectedModificationTime,
-			State:                    "RUNNING",
+			State:                    ExperimentStatePaused,
 			IsPersonalizationEnabled: false,
 			ModelName:                "",
 			ModelVersion:             "",
 			IsRapidExperiment:        true,
 			UserCap:                  80000,
 			CreatorID:                "admin",
-			Tags:                     nil,
+			Tags:                     []string{"tag_00"},
 			Buckets:                  []*Bucket{},
 			ExclusionIDList:          nil,
 			ExperimentPageList:       nil,
-			Priority:                 0.0,
+			Priority:                 0,
 		}
 
 		suite.EqualValues(
@@ -91,5 +227,5 @@ func (suite *JsonTestSuite) TestExperiment() {
 }
 
 func TestJsonTestSuite(t *testing.T) {
-	suite.Run(t, new(JsonTestSuite))
+	suite.Run(t, new(EncodingTestSuite))
 }
