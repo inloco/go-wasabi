@@ -1,0 +1,14 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.11
+
+    working_directory: /go/src/github.com/inloco/go-wasabi
+
+    steps:
+      - checkout
+      - run:
+          name: Run tests
+          environment:
+          command: go test $(go list ./... | grep -v /vendor/)
