@@ -11,4 +11,4 @@ jobs:
       - run:
           name: Run tests
           environment:
-          command: go test $(go list ./... | grep -v /vendor/)
+          command: make test
