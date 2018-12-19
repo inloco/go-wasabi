@@ -2,23 +2,29 @@ package http
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/inloco/go-wasabi/assignments"
 	"github.com/inloco/go-wasabi/experiments"
 )
 
 type HttpClient struct {
+	http.Client
+
 	address string
+
+	applicationName string
 
 	login    string
 	password string
 }
 
-func NewHttpClient(address, login, password string) *HttpClient {
+func NewHttpClient(address, applicationName, login, password string) *HttpClient {
 	return &HttpClient{
-		address:  address,
-		login:    login,
-		password: password,
+		address:         address,
+		applicationName: applicationName,
+		login:           login,
+		password:        password,
 	}
 }
 
