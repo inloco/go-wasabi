@@ -5,11 +5,11 @@ import (
 )
 
 const (
-	generateAssignmentPathFormat = "/v1/assignments/applications/%s/experiments/%s/users/%s"
+	generateAssignmentPathFormat = "/api/v1/assignments/applications/%s/experiments/%s/users/%s"
 
-	createExperimentPathFormat  = "/v1/experiments"
-	getExperimentsPathFormat    = "/v1/experiments"
-	getExperimentByIDPathFormat = "/v1/experiments/%s"
+	createExperimentPathFormat  = "/api/v1/experiments"
+	getExperimentsPathFormat    = "/api/v1/experiments"
+	getExperimentByIDPathFormat = "/api/v1/experiments/%s"
 )
 
 func generateAssignmentPath(applicationName, experimentLabel, userID string) string {
