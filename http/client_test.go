@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/inloco/go-wasabi/experiments/fixtures"
-	"github.com/inloco/go-wasabi/http/test"
+	"github.com/inloco/go-wasabi/http/mockserver"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -17,7 +17,7 @@ type HttpTestSuite struct {
 
 func (suite *HttpTestSuite) SetupTest() {
 
-	s := test.NewTestServer(suite.T())
+	s := mockserver.NewTestServer(suite.T())
 
 	client := NewHttpClient(
 		s.URL,
@@ -40,7 +40,7 @@ func (suite *HttpTestSuite) TestGenerateAssignment() {
 
 	if suite.NoError(err) {
 		suite.Equal(
-			test.GenerateAssignmentResponseResource,
+			mockserver.GenerateAssignmentResponseResource,
 			assignment,
 		)
 	}
@@ -55,6 +55,8 @@ func (suite *HttpTestSuite) TestCreateExperiment() {
 	suite.Require().NoError(err)
 	suite.Require().NotNil(res)
 	suite.Require().NotEmpty(res.ID)
+	suite.EqualValues(experiment.ApplicationName, res.ApplicationName)
+	suite.EqualValues(experiment.Label, res.Label)
 }
 
 func TestHttpTestSuite(t *testing.T) {

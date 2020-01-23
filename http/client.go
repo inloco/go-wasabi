@@ -74,8 +74,9 @@ func (c *HttpClient) CreateExperiment(ctx context.Context, experiment *experimen
 		return nil, err
 	}
 
-	err = json.Unmarshal(body, experiment)
-	return experiment, err
+	experimentCreated := &experiments.Experiment{}
+	err = json.Unmarshal(body, experimentCreated)
+	return experimentCreated, err
 }
 
 func (c *HttpClient) GetExperiments(ctx context.Context) ([]*experiments.Experiment, error) {
