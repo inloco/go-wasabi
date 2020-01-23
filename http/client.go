@@ -1,9 +1,9 @@
 package http
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/inloco/go-wasabi/assignments"
@@ -43,17 +43,9 @@ func (c *HttpClient) GenerateAssignment(ctx context.Context, experimentLabel str
 		return nil, err
 	}
 
-	res, err := http.DefaultClient.Do(req)
+	body, err := executeRequest(req)
 	if err != nil {
 		return nil, err
-	}
-
-	body, err := ioutil.ReadAll(res.Body)
-	switch {
-	case err != nil:
-		return nil, err
-	case res.StatusCode != http.StatusOK:
-		return nil, c.handleUnexpectedResponse(res.StatusCode, body)
 	}
 
 	assignment := &assignments.Assignment{}
@@ -63,7 +55,27 @@ func (c *HttpClient) GenerateAssignment(ctx context.Context, experimentLabel str
 }
 
 func (c *HttpClient) CreateExperiment(ctx context.Context, experiment *experiments.Experiment) (*experiments.Experiment, error) {
-	return nil, nil
+	url := c.address + createExperimentPath()
+
+	payload, err := json.Marshal(experiment)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(payload))
+	if err != nil {
+		return nil, err
+	}
+
+	req.SetBasicAuth(c.login, c.password)
+
+	body, err := executeRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(body, experiment)
+	return experiment, err
 }
 
 func (c *HttpClient) GetExperiments(ctx context.Context) ([]*experiments.Experiment, error) {
