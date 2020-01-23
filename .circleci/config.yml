@@ -1,8 +1,11 @@
 version: 2
 jobs:
   build:
+    environment: 
+      - PACKAGE_PATH: "github.com/inloco/4apps"
+      - GO111MODULE: "on"
     docker:
-      - image: circleci/golang:1.11
+      - image: circleci/golang:1.13
 
     working_directory: /go/src/github.com/inloco/go-wasabi
 
