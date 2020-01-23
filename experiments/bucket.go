@@ -1,5 +1,10 @@
 package experiments
 
+const (
+	BucketLabelControl   = "control"
+	BucketLabelTreatment = "treatment"
+)
+
 type Bucket struct {
 	Label             string  `json:"label"`
 	ExperimentID      string  `json:"experimentID"`

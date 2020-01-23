@@ -24,12 +24,14 @@ func Buckets() []*experiments.Bucket {
 		&experiments.Bucket{
 			AllocationPercent: 0.2,
 			IsControl:         true,
-			Label:             "control",
+			Label:             experiments.BucketLabelControl,
 			Payload:           "do_not_deliver",
+			ExperimentID:      "experiment_id",
 		},
 		&experiments.Bucket{
 			AllocationPercent: 0.8,
-			Label:             "treatment",
+			Label:             experiments.BucketLabelTreatment,
+			ExperimentID:      "experiment_id",
 		},
 	}
 }
