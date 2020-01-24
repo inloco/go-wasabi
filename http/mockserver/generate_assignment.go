@@ -1,4 +1,4 @@
-package http_test
+package mockserver
 
 import (
 	"net/http"

@@ -23,7 +23,7 @@ type remoteErrorInfo struct {
 	Message string `json:"message"`
 }
 
-func (c *HttpClient) handleUnexpectedResponse(statusCode int, body []byte) error {
+func handleUnexpectedResponse(statusCode int, body []byte) error {
 
 	err := &UnexpectedResponse{statusCode: statusCode}
 
