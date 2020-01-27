@@ -55,8 +55,25 @@ func (suite *HttpTestSuite) TestCreateExperiment() {
 	suite.Require().NoError(err)
 	suite.Require().NotNil(res)
 	suite.Require().NotEmpty(res.ID)
+
 	suite.EqualValues(experiment.ApplicationName, res.ApplicationName)
 	suite.EqualValues(experiment.Label, res.Label)
+}
+
+func (suite *HttpTestSuite) TestCreateBucket() {
+	buckets := fixtures.Buckets()
+
+	res, err := suite.client.CreateBucket(context.Background(), buckets[0])
+
+	suite.Require().NoError(err)
+	suite.Require().NotNil(res)
+	suite.Require().NotEmpty(res.State)
+
+	suite.EqualValues(buckets[0].AllocationPercent, res.AllocationPercent)
+	suite.EqualValues(buckets[0].IsControl, res.IsControl)
+	suite.EqualValues(buckets[0].Label, res.Label)
+	suite.EqualValues(buckets[0].Payload, res.Payload)
+	suite.EqualValues(buckets[0].ExperimentID, res.ExperimentID)
 }
 
 func TestHttpTestSuite(t *testing.T) {

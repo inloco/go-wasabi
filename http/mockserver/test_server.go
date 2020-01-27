@@ -23,6 +23,8 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		handleGenerateAssignemnt(w, req)
 	case req.Method == http.MethodPost && req.URL.EscapedPath() == createExperimentPath:
 		handleCreateExperiment(w, req)
+	case req.Method == http.MethodPost && req.URL.EscapedPath() == createBucketPath:
+		handleCreateBucket(w, req)
 	default:
 		failureMessage := fmt.Sprintf(
 			"test server does not recognize the request %s %s",
