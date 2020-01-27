@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/inloco/go-wasabi/experiments"
+
 	"github.com/inloco/go-wasabi/experiments/fixtures"
 	"github.com/inloco/go-wasabi/http/mockserver"
 	"github.com/stretchr/testify/suite"
@@ -13,6 +15,12 @@ type HttpTestSuite struct {
 	suite.Suite
 
 	client *HttpClient
+}
+
+func (suite *HttpTestSuite) assertEqualExperiment(expected *experiments.Experiment, received *experiments.Experiment) {
+	suite.EqualValues(expected.ApplicationName, received.ApplicationName)
+	suite.EqualValues(expected.ID, received.ID)
+	suite.EqualValues(expected.Label, received.Label)
 }
 
 func (suite *HttpTestSuite) SetupTest() {
@@ -74,6 +82,17 @@ func (suite *HttpTestSuite) TestCreateBucket() {
 	suite.EqualValues(buckets[0].Label, res.Label)
 	suite.EqualValues(buckets[0].Payload, res.Payload)
 	suite.EqualValues(buckets[0].ExperimentID, res.ExperimentID)
+}
+
+func (suite *HttpTestSuite) TestUpdateExperimentState() {
+	experiment := fixtures.ExperimentCreated()
+
+	res, err := suite.client.UpdateExperimentState(context.Background(), experiment.ID, experiments.ExperimentStateRunning)
+
+	suite.Require().NoError(err)
+	suite.Require().NotNil(res)
+	suite.assertEqualExperiment(experiment, res)
+	suite.EqualValues(res.State, experiments.ExperimentStateRunning)
 }
 
 func TestHttpTestSuite(t *testing.T) {

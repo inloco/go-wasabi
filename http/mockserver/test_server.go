@@ -23,6 +23,8 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		handleGenerateAssignemnt(w, req)
 	case req.Method == http.MethodPost && req.URL.EscapedPath() == createExperimentPath:
 		handleCreateExperiment(w, req)
+	case req.Method == http.MethodPut && req.URL.EscapedPath() == updateExperimentStatePath:
+		handleUpdateExperimentState(w, req)
 	case req.Method == http.MethodPost && req.URL.EscapedPath() == createBucketPath:
 		handleCreateBucket(w, req)
 	default:
