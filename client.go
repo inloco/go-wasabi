@@ -12,5 +12,6 @@ import (
 type Client interface {
 	GenerateAssignment(ctx context.Context, experimentLabel string, userID string) (*assignments.Assignment, error)
 	CreateExperiment(ctx context.Context, experiment *experiments.Experiment) (*experiments.Experiment, error)
+	UpdateExperimentState(ctx context.Context, id string, state experiments.ExperimentState) (*experiments.Experiment, error)
 	CreateBucket(ctx context.Context, bucket *experiments.Bucket) (*experiments.Bucket, error)
 }

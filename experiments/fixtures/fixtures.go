@@ -35,3 +35,11 @@ func Buckets() []*experiments.Bucket {
 		},
 	}
 }
+
+func ExperimentCreated() *experiments.Experiment {
+	experiment := Experiment()
+	experiment.ID = "experiment_id"
+	experiment.State = experiments.ExperimentStateDraft
+
+	return experiment
+}

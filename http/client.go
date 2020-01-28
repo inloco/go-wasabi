@@ -79,6 +79,32 @@ func (c *HttpClient) CreateExperiment(ctx context.Context, experiment *experimen
 	return experimentCreated, err
 }
 
+func (c *HttpClient) UpdateExperimentState(ctx context.Context, id string, state experiments.ExperimentState) (*experiments.Experiment, error) {
+	url := c.address + updateExperimentPath(id)
+
+	updateStateRequest := map[string]experiments.ExperimentState{"state": state}
+	payload, err := json.Marshal(updateStateRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, url, bytes.NewBuffer(payload))
+	if err != nil {
+		return nil, err
+	}
+
+	req.SetBasicAuth(c.login, c.password)
+
+	body, err := executeRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	experimentUpdated := &experiments.Experiment{}
+	err = json.Unmarshal(body, experimentUpdated)
+	return experimentUpdated, err
+}
+
 func (c *HttpClient) CreateBucket(ctx context.Context, bucket *experiments.Bucket) (*experiments.Bucket, error) {
 	url := c.address + createBucketPath(bucket.ExperimentID)
 
