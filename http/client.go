@@ -5,10 +5,13 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/inloco/go-wasabi/assignments"
 	"github.com/inloco/go-wasabi/experiments"
 )
+
+const timeFormat = "2006-01-02T15:04:05"
 
 type HttpClient struct {
 	http.Client
@@ -56,6 +59,19 @@ func (c *HttpClient) GenerateAssignment(ctx context.Context, experimentLabel str
 
 func (c *HttpClient) CreateExperiment(ctx context.Context, experiment *experiments.Experiment) (*experiments.Experiment, error) {
 	url := c.address + createExperimentPath()
+
+	startTime, err := time.Parse(timeFormat, experiment.StartTime.Format(timeFormat))
+	if err != nil {
+		return nil, err
+	}
+
+	endTime, err := time.Parse(timeFormat, experiment.EndTime.Format(timeFormat))
+	if err != nil {
+		return nil, err
+	}
+
+	experiment.StartTime = &startTime
+	experiment.EndTime = &endTime
 
 	payload, err := json.Marshal(experiment)
 	if err != nil {

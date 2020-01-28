@@ -12,24 +12,24 @@ type Experiment struct {
 	EndTime                  *time.Time        `json:"endTime"`
 	SamplingPercent          float64           `json:"samplingPercent"`
 	Description              string            `json:"description"`
-	HypothesisIsCorrect      string            `json:"hypothesisIsCorrect"`
-	Results                  string            `json:"results"`
-	Rule                     string            `json:"rule"`
-	RuleJSON                 string            `json:"ruleJson"`
-	CreationTime             *time.Time        `json:"creationTime"`
-	ModificationTime         *time.Time        `json:"modificationTime"`
-	State                    ExperimentState   `json:"state"`
-	IsPersonalizationEnabled bool              `json:"isPersonalizationEnabled"`
-	ModelName                string            `json:"modelName"`
-	ModelVersion             string            `json:"modelVersion"`
-	IsRapidExperiment        bool              `json:"isRapidExperiment"`
-	UserCap                  float64           `json:"userCap"`
-	CreatorID                string            `json:"creatorID"`
-	Tags                     []string          `json:"tags"`
-	Buckets                  []*Bucket         `json:"buckets"`
-	ExclusionIDList          []string          `json:"exclusionIdList"`
-	ExperimentPageList       []*ExperimentPage `json:"experimentPageList"`
-	Priority                 float64           `json:"priority"`
+	HypothesisIsCorrect      string            `json:"hypothesisIsCorrect,omitempty"`
+	Results                  string            `json:"results,omitempty"`
+	Rule                     string            `json:"rule,omitempty"`
+	RuleJSON                 string            `json:"ruleJson,omitempty"`
+	CreationTime             *time.Time        `json:"creationTime,omitempty"`
+	ModificationTime         *time.Time        `json:"modificationTime,omitempty"`
+	State                    ExperimentState   `json:"state,omitempty"`
+	IsPersonalizationEnabled bool              `json:"isPersonalizationEnabled,omitempty"`
+	ModelName                string            `json:"modelName,omitempty"`
+	ModelVersion             string            `json:"modelVersion,omitempty"`
+	IsRapidExperiment        bool              `json:"isRapidExperiment,omitempty"`
+	UserCap                  float64           `json:"userCap,omitempty"`
+	CreatorID                string            `json:"creatorID,omitempty"`
+	Tags                     []string          `json:"tags,omitempty"`
+	Buckets                  []*Bucket         `json:"buckets,omitempty"`
+	ExclusionIDList          []string          `json:"exclusionIdList,omitempty"`
+	ExperimentPageList       []*ExperimentPage `json:"experimentPageList,omitempty"`
+	Priority                 float64           `json:"priority,omitempty"`
 }
 
 const (
