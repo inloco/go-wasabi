@@ -16,6 +16,10 @@ client := NewHttpClient(
 
 ```
 
+### API doc
+
+http://wasabi-for-apps.ubee.in/swagger/swaggerui/#/
+
 ### Generate an assignment
 
 ```go
@@ -27,3 +31,7 @@ assignment, err := client.GenerateAssignment(
 ```
 
 Check for `assignment.Status`, and use the `assignment.Payload` on your application :)
+
+### Creating an experiment
+
+See the file `examples/experiment.go`
