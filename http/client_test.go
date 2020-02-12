@@ -95,6 +95,20 @@ func (suite *HttpTestSuite) TestUpdateExperimentState() {
 	suite.EqualValues(res.State, experiments.ExperimentStateRunning)
 }
 
+func (suite *HttpTestSuite) TestGetExperimentByID() {
+	expected := fixtures.Experiment()
+
+	experiment, err := suite.client.GetExperimentByID(
+		context.Background(),
+		"experiment01",
+	)
+
+	if suite.NoError(err) {
+		suite.EqualValues(expected.ApplicationName, experiment.ApplicationName)
+		suite.EqualValues(expected.Label, experiment.Label)
+	}
+}
+
 func TestHttpTestSuite(t *testing.T) {
 	suite.Run(t, new(HttpTestSuite))
 }
