@@ -150,6 +150,25 @@ func (c *HttpClient) GetExperiments(ctx context.Context) ([]*experiments.Experim
 	return nil, nil
 }
 
-func (c *HttpClient) GetExperimentByID(ctx context.Context, experimentID string) (*assignments.Assignment, error) {
-	return nil, nil
+func (c *HttpClient) GetExperimentByID(ctx context.Context, experimentID string) (*experiments.Experiment, error) {
+	url := c.address + getExperimentByIDPath(experimentID)
+
+	req, err := http.NewRequest(
+		http.MethodGet,
+		url,
+		nil,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := executeRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	experiment := &experiments.Experiment{}
+	err = json.Unmarshal(body, experiment)
+
+	return experiment, err
 }
