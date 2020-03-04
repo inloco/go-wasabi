@@ -109,6 +109,19 @@ func (suite *HttpTestSuite) TestGetExperimentByID() {
 	}
 }
 
+func (suite *HttpTestSuite) TestGetExperimentBuckets() {
+	expected := fixtures.Buckets()
+
+	buckets, err := suite.client.GetExperimentBuckets(
+		context.Background(),
+		"experiment01",
+	)
+
+	if suite.NoError(err) {
+		suite.ElementsMatch(expected, buckets)
+	}
+}
+
 func TestHttpTestSuite(t *testing.T) {
 	suite.Run(t, new(HttpTestSuite))
 }
