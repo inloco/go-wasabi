@@ -195,3 +195,41 @@ func (c *HttpClient) GetExperimentBuckets(ctx context.Context, experimentID stri
 
 	return experimentWithOnlyBuckets.Buckets, err
 }
+
+func (c *HttpClient) UpdateExperiment(ctx context.Context, experiment *experiments.Experiment) (*experiments.Experiment, error) {
+	url := c.address + updateExperimentPath(experiment.ID)
+
+	startTime, err := time.Parse(timeFormat, experiment.StartTime.Format(timeFormat))
+	if err != nil {
+		return nil, err
+	}
+
+	endTime, err := time.Parse(timeFormat, experiment.EndTime.Format(timeFormat))
+	if err != nil {
+		return nil, err
+	}
+
+	experiment.StartTime = &startTime
+	experiment.EndTime = &endTime
+
+	payload, err := json.Marshal(experiment)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, url, bytes.NewBuffer(payload))
+	if err != nil {
+		return nil, err
+	}
+
+	req.SetBasicAuth(c.login, c.password)
+
+	body, err := executeRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	experimentUpdated := &experiments.Experiment{}
+	err = json.Unmarshal(body, experimentUpdated)
+	return experimentUpdated, err
+}
