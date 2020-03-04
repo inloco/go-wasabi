@@ -226,6 +226,65 @@ func (suite *EncodingTestSuite) TestShallowExperiment() {
 
 }
 
+func (suite *EncodingTestSuite) TestBuckets() {
+	payload := `{
+		"buckets": [{
+			"label": "control",
+			"experimentID": "exp-id",
+			"allocationPercent": 0.4,
+			"description": "description1",
+			"payload": "payload1",
+			"state": "OPEN",
+			"isControl": true
+		},
+		{
+			"label": "treatment",
+			"experimentID": "exp-id",
+			"allocationPercent": 0.6,
+			"description": "description2",
+			"payload": "payload2",
+			"state": "OPEN",
+			"isControl": false
+		}]
+	}
+	`
+
+	aux := &Experiment{}
+	err := json.Unmarshal([]byte(payload), aux)
+
+	if suite.NoError(err) {
+		expectedControlBucket := &Bucket{
+			Label:             "control",
+			ExperimentID:      "exp-id",
+			AllocationPercent: 0.4,
+			Description:       "description1",
+			Payload:           "payload1",
+			State:             "OPEN",
+			IsControl:         true,
+		}
+
+		expectedTreatmentBucket := &Bucket{
+			Label:             "treatment",
+			ExperimentID:      "exp-id",
+			AllocationPercent: 0.6,
+			Description:       "description2",
+			Payload:           "payload2",
+			State:             "OPEN",
+			IsControl:         false,
+		}
+
+		suite.Contains(
+			aux.Buckets,
+			expectedControlBucket,
+		)
+
+		suite.Contains(
+			aux.Buckets,
+			expectedTreatmentBucket,
+		)
+	}
+}
+
 func TestJsonTestSuite(t *testing.T) {
 	suite.Run(t, new(EncodingTestSuite))
 }
