@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"time"
 
 	"github.com/inloco/go-wasabi/assignments"
 	"github.com/inloco/go-wasabi/experiments"
@@ -60,18 +59,18 @@ func (c *HttpClient) GenerateAssignment(ctx context.Context, experimentLabel str
 func (c *HttpClient) CreateExperiment(ctx context.Context, experiment *experiments.Experiment) (*experiments.Experiment, error) {
 	url := c.address + createExperimentPath()
 
-	startTime, err := time.Parse(timeFormat, experiment.StartTime.Format(timeFormat))
+	startTime, err := removeTimezoneFromTime(experiment.StartTime)
 	if err != nil {
 		return nil, err
 	}
 
-	endTime, err := time.Parse(timeFormat, experiment.EndTime.Format(timeFormat))
+	endTime, err := removeTimezoneFromTime(experiment.EndTime)
 	if err != nil {
 		return nil, err
 	}
 
-	experiment.StartTime = &startTime
-	experiment.EndTime = &endTime
+	experiment.StartTime = startTime
+	experiment.EndTime = endTime
 
 	payload, err := json.Marshal(experiment)
 	if err != nil {
@@ -199,18 +198,18 @@ func (c *HttpClient) GetExperimentBuckets(ctx context.Context, experimentID stri
 func (c *HttpClient) UpdateExperiment(ctx context.Context, experiment *experiments.Experiment) (*experiments.Experiment, error) {
 	url := c.address + updateExperimentPath(experiment.ID)
 
-	startTime, err := time.Parse(timeFormat, experiment.StartTime.Format(timeFormat))
+	startTime, err := removeTimezoneFromTime(experiment.StartTime)
 	if err != nil {
 		return nil, err
 	}
 
-	endTime, err := time.Parse(timeFormat, experiment.EndTime.Format(timeFormat))
+	endTime, err := removeTimezoneFromTime(experiment.EndTime)
 	if err != nil {
 		return nil, err
 	}
 
-	experiment.StartTime = &startTime
-	experiment.EndTime = &endTime
+	experiment.StartTime = startTime
+	experiment.EndTime = endTime
 
 	payload, err := json.Marshal(experiment)
 	if err != nil {
