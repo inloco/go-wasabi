@@ -172,3 +172,26 @@ func (c *HttpClient) GetExperimentByID(ctx context.Context, experimentID string)
 
 	return experiment, err
 }
+
+func (c *HttpClient) GetExperimentBuckets(ctx context.Context, experimentID string) ([]*experiments.Bucket, error) {
+	url := c.address + getExperimentBucketsPath(experimentID)
+
+	req, err := http.NewRequest(
+		http.MethodGet,
+		url,
+		nil,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := executeRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	experimentWithOnlyBuckets := &experiments.Experiment{}
+	err = json.Unmarshal(body, experimentWithOnlyBuckets)
+
+	return experimentWithOnlyBuckets.Buckets, err
+}
