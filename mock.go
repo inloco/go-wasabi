@@ -40,3 +40,8 @@ func (m *MockedClient) GetExperimentByID(ctx context.Context, experimentID strin
 	args := m.Called(experimentID)
 	return args.Get(0).(*experiments.Experiment), args.Error(1)
 }
+
+func (m *MockedClient) GetExperimentBuckets(ctx context.Context, experimentID string) ([]*experiments.Bucket, error) {
+	args := m.Called(experimentID)
+	return args.Get(0).([]*experiments.Bucket), args.Error(1)
+}
