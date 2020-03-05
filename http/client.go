@@ -206,7 +206,7 @@ func (c *HttpClient) UpdateExperiment(ctx context.Context, id string, experiment
 		experiment.StartTime = startTime
 	}
 
-	if experiment.StartTime != nil {
+	if experiment.EndTime != nil {
 		endTime, err := removeTimezoneFromTime(experiment.EndTime)
 		if err != nil {
 			return nil, err
