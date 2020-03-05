@@ -125,7 +125,7 @@ func (suite *HttpTestSuite) TestGetExperimentBuckets() {
 func (suite *HttpTestSuite) TestUpdateExperiment() {
 	experiment := fixtures.ExperimentToUpdate()
 
-	res, err := suite.client.UpdateExperiment(context.Background(), experiment)
+	res, err := suite.client.UpdateExperiment(context.Background(), experiment.ID, experiment)
 
 	suite.Require().NoError(err)
 	suite.Require().NotNil(res)

@@ -195,21 +195,24 @@ func (c *HttpClient) GetExperimentBuckets(ctx context.Context, experimentID stri
 	return experimentWithOnlyBuckets.Buckets, err
 }
 
-func (c *HttpClient) UpdateExperiment(ctx context.Context, experiment *experiments.Experiment) (*experiments.Experiment, error) {
-	url := c.address + updateExperimentPath(experiment.ID)
+func (c *HttpClient) UpdateExperiment(ctx context.Context, id string, experiment *experiments.Experiment) (*experiments.Experiment, error) {
+	url := c.address + updateExperimentPath(id)
 
-	startTime, err := removeTimezoneFromTime(experiment.StartTime)
-	if err != nil {
-		return nil, err
+	if experiment.StartTime != nil {
+		startTime, err := removeTimezoneFromTime(experiment.StartTime)
+		if err != nil {
+			return nil, err
+		}
+		experiment.StartTime = startTime
 	}
 
-	endTime, err := removeTimezoneFromTime(experiment.EndTime)
-	if err != nil {
-		return nil, err
+	if experiment.StartTime != nil {
+		endTime, err := removeTimezoneFromTime(experiment.EndTime)
+		if err != nil {
+			return nil, err
+		}
+		experiment.EndTime = endTime
 	}
-
-	experiment.StartTime = startTime
-	experiment.EndTime = endTime
 
 	payload, err := json.Marshal(experiment)
 	if err != nil {
