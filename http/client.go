@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"time"
 
 	"github.com/inloco/go-wasabi/assignments"
 	"github.com/inloco/go-wasabi/experiments"
@@ -60,18 +59,18 @@ func (c *HttpClient) GenerateAssignment(ctx context.Context, experimentLabel str
 func (c *HttpClient) CreateExperiment(ctx context.Context, experiment *experiments.Experiment) (*experiments.Experiment, error) {
 	url := c.address + createExperimentPath()
 
-	startTime, err := time.Parse(timeFormat, experiment.StartTime.Format(timeFormat))
+	startTime, err := removeTimezoneFromTime(experiment.StartTime)
 	if err != nil {
 		return nil, err
 	}
 
-	endTime, err := time.Parse(timeFormat, experiment.EndTime.Format(timeFormat))
+	endTime, err := removeTimezoneFromTime(experiment.EndTime)
 	if err != nil {
 		return nil, err
 	}
 
-	experiment.StartTime = &startTime
-	experiment.EndTime = &endTime
+	experiment.StartTime = startTime
+	experiment.EndTime = endTime
 
 	payload, err := json.Marshal(experiment)
 	if err != nil {
@@ -171,4 +170,68 @@ func (c *HttpClient) GetExperimentByID(ctx context.Context, experimentID string)
 	err = json.Unmarshal(body, experiment)
 
 	return experiment, err
+}
+
+func (c *HttpClient) GetExperimentBuckets(ctx context.Context, experimentID string) ([]*experiments.Bucket, error) {
+	url := c.address + getExperimentBucketsPath(experimentID)
+
+	req, err := http.NewRequest(
+		http.MethodGet,
+		url,
+		nil,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := executeRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	experimentWithOnlyBuckets := &experiments.Experiment{}
+	err = json.Unmarshal(body, experimentWithOnlyBuckets)
+
+	return experimentWithOnlyBuckets.Buckets, err
+}
+
+func (c *HttpClient) UpdateExperiment(ctx context.Context, id string, experiment *experiments.Experiment) (*experiments.Experiment, error) {
+	url := c.address + updateExperimentPath(id)
+
+	if experiment.StartTime != nil {
+		startTime, err := removeTimezoneFromTime(experiment.StartTime)
+		if err != nil {
+			return nil, err
+		}
+		experiment.StartTime = startTime
+	}
+
+	if experiment.EndTime != nil {
+		endTime, err := removeTimezoneFromTime(experiment.EndTime)
+		if err != nil {
+			return nil, err
+		}
+		experiment.EndTime = endTime
+	}
+
+	payload, err := json.Marshal(experiment)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, url, bytes.NewBuffer(payload))
+	if err != nil {
+		return nil, err
+	}
+
+	req.SetBasicAuth(c.login, c.password)
+
+	body, err := executeRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	experimentUpdated := &experiments.Experiment{}
+	err = json.Unmarshal(body, experimentUpdated)
+	return experimentUpdated, err
 }

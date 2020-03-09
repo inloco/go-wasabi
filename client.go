@@ -15,4 +15,6 @@ type Client interface {
 	UpdateExperimentState(ctx context.Context, id string, state experiments.ExperimentState) (*experiments.Experiment, error)
 	CreateBucket(ctx context.Context, bucket *experiments.Bucket) (*experiments.Bucket, error)
 	GetExperimentByID(ctx context.Context, experimentID string) (*experiments.Experiment, error)
+	GetExperimentBuckets(ctx context.Context, experimentID string) ([]*experiments.Bucket, error)
+	UpdateExperiment(ctx context.Context, id string, experiment *experiments.Experiment) (*experiments.Experiment, error)
 }

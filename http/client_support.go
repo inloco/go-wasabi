@@ -3,6 +3,7 @@ package http
 import (
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 func executeRequest(req *http.Request) ([]byte, error) {
@@ -21,4 +22,12 @@ func executeRequest(req *http.Request) ([]byte, error) {
 	}
 
 	return body, nil
+}
+
+func removeTimezoneFromTime(t *time.Time) (*time.Time, error) {
+	newTime, err := time.Parse(timeFormat, t.Format(timeFormat))
+	if err != nil {
+		return nil, err
+	}
+	return &newTime, nil
 }
