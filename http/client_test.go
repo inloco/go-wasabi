@@ -85,7 +85,7 @@ func (suite *HttpTestSuite) TestCreateBucket() {
 }
 
 func (suite *HttpTestSuite) TestUpdateExperimentState() {
-	experiment := fixtures.ExperimentCreated()
+	experiment := fixtures.ExperimentToUpdateState()
 
 	res, err := suite.client.UpdateExperimentState(context.Background(), experiment.ID, experiments.ExperimentStateRunning)
 
@@ -120,6 +120,18 @@ func (suite *HttpTestSuite) TestGetExperimentBuckets() {
 	if suite.NoError(err) {
 		suite.ElementsMatch(expected, buckets)
 	}
+}
+
+func (suite *HttpTestSuite) TestUpdateExperiment() {
+	experiment := fixtures.ExperimentToUpdate()
+
+	res, err := suite.client.UpdateExperiment(context.Background(), experiment.ID, experiment)
+
+	suite.Require().NoError(err)
+	suite.Require().NotNil(res)
+	suite.Require().NotEmpty(res.ID)
+
+	suite.EqualValues(experiment, res)
 }
 
 func TestHttpTestSuite(t *testing.T) {

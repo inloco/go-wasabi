@@ -5,13 +5,13 @@ import (
 )
 
 type Experiment struct {
-	ID                       string            `json:"id"`
-	Label                    string            `json:"label"`
-	ApplicationName          string            `json:"applicationName"`
-	StartTime                *time.Time        `json:"startTime"`
-	EndTime                  *time.Time        `json:"endTime"`
-	SamplingPercent          float64           `json:"samplingPercent"`
-	Description              string            `json:"description"`
+	ID                       string            `json:"id,omitempty"`
+	Label                    string            `json:"label,omitempty"`
+	ApplicationName          string            `json:"applicationName,omitempty"`
+	StartTime                *time.Time        `json:"startTime,omitempty"`
+	EndTime                  *time.Time        `json:"endTime,omitempty"`
+	SamplingPercent          float64           `json:"samplingPercent,omitempty"`
+	Description              string            `json:"description,omitempty"`
 	HypothesisIsCorrect      string            `json:"hypothesisIsCorrect,omitempty"`
 	Results                  string            `json:"results,omitempty"`
 	Rule                     string            `json:"rule,omitempty"`

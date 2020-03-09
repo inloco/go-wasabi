@@ -6,8 +6,13 @@ import (
 	"github.com/inloco/go-wasabi/experiments"
 )
 
+const (
+	startDate     = "2020-03-04"
+	layoutDateISO = "2006-01-02"
+)
+
 func Experiment() *experiments.Experiment {
-	now := time.Now()
+	now, _ := time.Parse(layoutDateISO, "2020-03-04")
 	tomorrow := now.AddDate(0, 0, 1)
 
 	return &experiments.Experiment{
@@ -36,10 +41,17 @@ func Buckets() []*experiments.Bucket {
 	}
 }
 
-func ExperimentCreated() *experiments.Experiment {
+func ExperimentToUpdateState() *experiments.Experiment {
 	experiment := Experiment()
 	experiment.ID = "experiment_id"
 	experiment.State = experiments.ExperimentStateDraft
+
+	return experiment
+}
+
+func ExperimentToUpdate() *experiments.Experiment {
+	experiment := Experiment()
+	experiment.ID = "experiment_update_id"
 
 	return experiment
 }
