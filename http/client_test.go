@@ -43,7 +43,7 @@ func (suite *HttpTestSuite) TestGenerateAssignment() {
 	assignment, err := suite.client.GenerateAssignment(
 		context.Background(),
 		"JustToTestGenerateAssignment",
-		"userID1",
+		"user/ID1",
 	)
 
 	if suite.NoError(err) {
