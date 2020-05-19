@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	generateAssignmentPath = "/api/v1/assignments/applications/test/experiments/JustToTestGenerateAssignment/users/userID1"
+	generateAssignmentPath = "/api/v1/assignments/applications/test/experiments/JustToTestGenerateAssignment/users/user%2FID1"
 
 	generateAssignemntResponseStatus  = http.StatusOK
 	generateAssignmentResponsePayload = `{

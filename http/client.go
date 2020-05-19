@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"net/url"
 
 	"github.com/inloco/go-wasabi/assignments"
 	"github.com/inloco/go-wasabi/experiments"
@@ -34,11 +35,12 @@ func NewHttpClient(address, applicationName, login, password string) *HttpClient
 
 func (c *HttpClient) GenerateAssignment(ctx context.Context, experimentLabel string, userID string) (*assignments.Assignment, error) {
 
-	url := c.address + generateAssignmentPath(c.applicationName, experimentLabel, userID)
+	userIDEscaped := url.PathEscape(userID)
+	urlPath := c.address + generateAssignmentPath(c.applicationName, experimentLabel, userIDEscaped)
 
 	req, err := http.NewRequest(
 		http.MethodGet,
-		url,
+		urlPath,
 		nil,
 	)
 	if err != nil {
